@@ -1,39 +1,47 @@
-# BSRApp
+# Project Description
 
-BSRApp is the Android application used to collect RAW images for the RAW-56 burst super-resolution dataset on a Samsung Galaxy S23 Ultra. Each press of the capture button starts a burst of 56 frames on each of three rear cameras. The app targets all three physical cameras (Camera2 IDs `2`, `6`, and `7`) in each capture request. A complete saved burst contains 168 Digital Negative (`.dng`) files.
+This is an Android application developed to acquire RAW images for the [RAW-56 Burst Super-Resolution Dataset](https://huggingface.co/datasets/andersoncotrim/raw-56-burst-super-resolution) using a Samsung Galaxy S23 Ultra.
 
-## Capture a burst
+Each capture triggers a burst of 56 frames across three rear cameras. The application uses Android's Camera2 API to target the physical cameras with IDs `2`, `6`, and `7`, saving the captured RAW images as Digital Negative (`.dng`) files.
 
-1. Open this project in Android Studio, connect the phone, and run the `app` module. The project requires Android 14 (API 34) or later. The camera IDs are specific to the device configuration.
-2. On first launch, grant the requested permissions. In the Android folder picker, choose a folder you can find again, such as `Documents/BSRApp`. The app remembers this folder for subsequent captures.
-3. Frame the scene and tap the capture button once. When the app asks **“Deseja salvar captura?”** (Save capture?), tap **Sim** and wait for saving to finish.
+## Installation and Usage
 
-## Find the DNG files
+1. **Install the application.** Open the project in Android Studio, connect the smartphone, and run the `app` module. The application requires Android 14 (API 34) or later. The camera IDs are specific to the Samsung Galaxy S23 Ultra configuration.
+2. **Configure the output folder.** On first launch, grant the requested permissions and select a destination folder using the Android folder picker. The selected location is saved for subsequent captures.
+3. **Capture a burst.** Frame the scene and tap the capture button once. Wait for the acquisition and file-saving process to finish before starting another capture.
 
-Open **My Files** on the phone and navigate to the folder you chose. Each saved burst has its own subfolder named with a date and time in the format `yyyyMMdd_HHmmss_SSS`. All three cameras write to that same subfolder.
+## Output Files
 
-For example, if you chose `Documents/BSRApp` in internal storage, the first frame from each camera might appear as follows:
+Captured DNG files can be accessed through the phone's **My Files** application. Each burst is stored in a separate subfolder named using the timestamp format `yyyyMMdd_HHmmss_SSS`. Files from all three cameras are saved in the same subfolder.
+
+For example, a capture saved to `Documents/` may produce the following structure:
 
 ```text
-Documents/BSRApp/
+Documents/
 └── 20260512_143022_900/
     ├── IMG_20260512_143020_125_2_0.dng
     ├── IMG_20260512_143020_125_6_0.dng
-    └── IMG_20260512_143020_125_7_0.dng
+    ├── IMG_20260512_143020_125_7_0.dng
+    └── ...
 ```
 
-In each filename, the last two numbers identify the physical camera and the zero-based frame index (`0` through `55`). For example, files ending in `_6_0.dng` and `_7_0.dng` belong to the same capture request. To copy a full burst to a computer, connect the phone by USB, select **File transfer**, and copy the timestamped subfolder.
+Each filename follows the pattern:
 
-## Preprocessed dataset
+`IMG_<timestamp>_<camera_id>_<frame_index>.dng`
 
-The published dataset uses two of the three camera streams. Each scene pairs the 56-frame burst from the 0.5× ultrawide camera with a single high-resolution reference from the 10× telephoto camera, captured with the first burst frame. A separate preprocessing project converts the DNG captures into NumPy arrays.
+The final two fields identify the physical camera (`2`, `6`, or `7`) and the zero-based frame index (`0`–`55`), respectively. For example, `_6_0.dng` and `_7_0.dng` correspond to the first frames captured by cameras `6` and `7` within the same burst.
 
-| File | Contents |
-| --- | --- |
-| `lr.npy` | 56 low-resolution Bayer frames |
-| `hr.npy` | High-resolution reference image in linear RGB |
-| `h_norm.npy` | Residual affine transforms for aligning the burst frames |
+## Preprocessed Dataset
 
-Download the preprocessed data from [RAW-56 Burst Super-Resolution on Hugging Face](https://huggingface.co/datasets/andersoncotrim/raw-56-burst-super-resolution).
+The [published RAW-56 dataset](https://huggingface.co/datasets/andersoncotrim/raw-56-burst-super-resolution) uses two of the three captured camera streams:
 
-The GitHub link for the preprocessing project will be added here when available.
+- **Low-resolution (LR):** A 56-frame RAW burst acquired with the 0.5× ultrawide camera.
+- **High-resolution (HR):** A single reference image acquired with the 10× telephoto camera, corresponding to the beginning of the burst.
+
+A separate preprocessing pipeline converts the original DNG files into NumPy arrays, including the aligned LR bursts and HR references.
+
+*The preprocessing code will be linked here once publicly available.*
+
+## Citation
+
+If you find BSRApp or the RAW-56 dataset useful in your research, please cite the associated dataset publication and reference the [dataset repository](https://huggingface.co/datasets/andersoncotrim/raw-56-burst-super-resolution).
